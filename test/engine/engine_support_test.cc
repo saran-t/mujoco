@@ -163,7 +163,7 @@ TEST_F(VersionTest, MjVersion) {
 
 TEST_F(VersionTest, MjVersionString) {
   EXPECT_THAT(std::string_view(mj_versionString()),
-#if GTEST_USES_SIMPLE_RE == 1
+#if GTEST_USES_SIMPLE_RE
               ContainsRegex("^\\d+\\.\\d+\\.\\d+"));
 #else
               MatchesRegex("^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9a-z]+)?$"));
