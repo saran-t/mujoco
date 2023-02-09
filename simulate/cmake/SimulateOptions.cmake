@@ -85,17 +85,7 @@ include(MujocoLinkOptions)
 get_mujoco_extra_link_options(EXTRA_LINK_OPTIONS)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT MSVC))
-  set(EXTRA_COMPILE_OPTIONS -Wall -Werror)
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    # TODO: This should add to EXTRA_COMPILE_OPTIONS rather than overwrite it.
-    set(EXTRA_COMPILE_OPTIONS
-        -Wno-int-in-bool-context
-        -Wno-maybe-uninitialized
-        -Wno-sign-compare
-        -Wno-stringop-overflow
-        -Wno-stringop-truncation
-    )
-  endif()
+  set(EXTRA_COMPILE_OPTIONS -Wall -Werror -Wimplicit-fallthrough)
 endif()
 
 if(WIN32)
