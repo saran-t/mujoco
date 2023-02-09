@@ -117,7 +117,6 @@ void mj_kinematics(const mjModel* m, mjData* d) {
           break;
 
         case mjJNT_BALL:
-          mjFALLTHROUGH;
         case mjJNT_HINGE:
           // compute local quaternion rotation (qloc)
           if (jtype==mjJNT_BALL) {
@@ -283,7 +282,6 @@ void mj_camlight(const mjModel* m, mjData* d) {
     // adjust for mode
     switch (m->cam_mode[i]) {
     case mjCAMLIGHT_TRACK:
-      mjFALLTHROUGH;
     case mjCAMLIGHT_TRACKCOM:
       // fixed global orientation
       mju_copy(d->cam_xmat+9*i, m->cam_mat0+9*i, 9);
@@ -300,7 +298,6 @@ void mj_camlight(const mjModel* m, mjData* d) {
       break;
 
     case mjCAMLIGHT_TARGETBODY:
-      mjFALLTHROUGH;
     case mjCAMLIGHT_TARGETBODYCOM:
       // only if target body is specified
       if (id1>=0) {
@@ -345,7 +342,6 @@ void mj_camlight(const mjModel* m, mjData* d) {
     // adjust for mode
     switch (m->light_mode[i]) {
     case mjCAMLIGHT_TRACK:
-      mjFALLTHROUGH;
     case mjCAMLIGHT_TRACKCOM:
       // fixed global orientation
       mju_copy3(d->light_xdir+3*i, m->light_dir0+3*i);
@@ -362,7 +358,6 @@ void mj_camlight(const mjModel* m, mjData* d) {
       break;
 
     case mjCAMLIGHT_TARGETBODY:
-      mjFALLTHROUGH;
     case mjCAMLIGHT_TARGETBODYCOM:
       // only if target body is specified
       if (id1>=0) {
@@ -650,7 +645,6 @@ void mj_transmission(const mjModel* m, mjData* d) {
     // process according to transmission type
     switch (m->actuator_trntype[i]) {
     case mjTRN_JOINT:                   // joint
-      mjFALLTHROUGH;
     case mjTRN_JOINTINPARENT:           // joint, force in parent frame
       // slide and hinge joint: scalar gear
       if (m->jnt_type[id]==mjJNT_SLIDE || m->jnt_type[id]==mjJNT_HINGE) {
@@ -1371,7 +1365,6 @@ void mj_passive(const mjModel* m, mjData* d) {
       break;
 
     case mjJNT_SLIDE:
-      mjFALLTHROUGH;
     case mjJNT_HINGE:
       // apply force or torque
       d->qfrc_passive[dadr] -= stiffness*(d->qpos[padr] - m->qpos_spring[padr]);
@@ -1998,7 +1991,6 @@ void mj_rnePostConstraint(const mjModel* m, mjData* d) {
     int k;
     switch (m->eq_type[id]) {
     case mjEQ_CONNECT:
-      mjFALLTHROUGH;
     case mjEQ_WELD:
       // cfrc = world-oriented torque:force vector
       mju_copy3(cfrc + 3, d->efc_force + i);
@@ -2037,7 +2029,6 @@ void mj_rnePostConstraint(const mjModel* m, mjData* d) {
       break;
 
     case mjEQ_JOINT:
-      mjFALLTHROUGH;
     case mjEQ_TENDON:
       // increment 1 row
       i++;
