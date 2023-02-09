@@ -91,6 +91,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang
         ${EXTRA_COMPILE_OPTIONS}
         -Wno-int-in-bool-context
         -Wno-maybe-uninitialized
+        -Wno-sign-compare
     )
   endif()
 endif()
