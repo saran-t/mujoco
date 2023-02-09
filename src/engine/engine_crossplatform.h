@@ -46,7 +46,7 @@
   #endif
 #endif
 
-#if defined(__GNUC__) && (__GNUC__ >= 7 || defined(__clang__))
+#if #if defined(__clang__) || (defined(__GNUC__) && __GNUC__ >= 7)
   #define mjFALLTHROUGH __attribute__ ((fallthrough))
 #else
   #define mjFALLTHROUGH ((void) 0)
