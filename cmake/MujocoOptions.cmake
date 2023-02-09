@@ -85,13 +85,19 @@ include(MujocoLinkOptions)
 get_mujoco_extra_link_options(EXTRA_LINK_OPTIONS)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT MSVC))
-  set(EXTRA_COMPILE_OPTIONS -Wall -Werror -Wimplicit-fallthrough)
+  set(EXTRA_COMPILE_OPTIONS
+      -Wall
+      -Werror
+      -Wimplicit-fallthrough
+      -Wunused
+      -Wno-int-in-bool-context
+      -Wno-sign-compare
+      -Wno-unknown-pragmas
+  )
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(EXTRA_COMPILE_OPTIONS
         ${EXTRA_COMPILE_OPTIONS}
-        -Wno-int-in-bool-context
         -Wno-maybe-uninitialized
-        -Wno-sign-compare
     )
   endif()
 endif()
