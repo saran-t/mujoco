@@ -265,8 +265,11 @@ void mj_sensorPos(const mjModel* m, mjData* d) {
         break;
 
       case mjSENS_FRAMEPOS:                               // framepos
+        mjFALLTHROUGH;
       case mjSENS_FRAMEXAXIS:                             // framexaxis
+        mjFALLTHROUGH;
       case mjSENS_FRAMEYAXIS:                             // frameyaxis
+        mjFALLTHROUGH;
       case mjSENS_FRAMEZAXIS:                             // framezaxis
         // get xpos and xmat pointers for object frame
         get_xpos_xmat(d, objtype, objid, i, &xpos, &xmat);
@@ -706,6 +709,7 @@ void mj_sensorAcc(const mjModel* m, mjData* d) {
         break;
 
       case mjSENS_FRAMELINACC:                            // framelinacc
+        mjFALLTHROUGH;
       case mjSENS_FRAMEANGACC:                            // frameangacc
         // get 6D object acceleration, in global frame
         mj_objectAcceleration(m, d, objtype, objid, tmp, 0);
@@ -804,6 +808,7 @@ void mj_energyPos(const mjModel* m, mjData* d) {
 
         // continue with rotations
         padr += 3;
+        mjFALLTHROUGH;
 
       case mjJNT_BALL:
         // covert quatertion difference into angular "velocity"
