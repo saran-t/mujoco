@@ -316,7 +316,7 @@ int mjc_CapsuleBox(const mjModel* m, const mjData* d, mjContact* con,
         };
         mjtNum c[2];
       } d2;
-      d2 p, s, d, /*c, tmp1*/;
+      d2 p, s, d /*, c, tmp1*/;
       mjtNum u, v, w, e1, best /* ,e2 */, l /* , e3, e4 */;
 
       bestdist = bestdistmax;
