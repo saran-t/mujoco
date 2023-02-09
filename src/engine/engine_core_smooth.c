@@ -1291,6 +1291,7 @@ void mj_comVel(const mjModel* m, mjData* d) {
 
         // continue with rotations
         j += 3;
+        mjFALLTHROUGH;
 
       case mjJNT_BALL:
         // compute all 3 cdofdots using parent velocity
