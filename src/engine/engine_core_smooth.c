@@ -1352,7 +1352,7 @@ void mj_passive(const mjModel* m, mjData* d) {
       // continue with rotations
       dadr += 3;
       padr += 3;
-      mjFALLTHROUGH;
+      // fallthrough
 
     case mjJNT_BALL:
       // covert quatertion difference into angular "velocity"

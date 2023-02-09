@@ -88,7 +88,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang
   set(EXTRA_COMPILE_OPTIONS
       -Wall
       -Werror
-      -Wimplicit-fallthrough=5
       -Wunused
       -Wno-int-in-bool-context
       -Wno-sign-compare
@@ -97,6 +96,13 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(EXTRA_COMPILE_OPTIONS
         ${EXTRA_COMPILE_OPTIONS}
+        -Wimplicit-fallthrough=5
+        -Wno-maybe-uninitialized
+    )
+  else()
+    set(EXTRA_COMPILE_OPTIONS
+        ${EXTRA_COMPILE_OPTIONS}
+        -Wimplicit-fallthrough
         -Wno-maybe-uninitialized
     )
   endif()
