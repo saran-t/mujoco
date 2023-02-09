@@ -283,6 +283,7 @@ macro(mujoco_pybind11_module name)
       -Werror
       -Wimplicit-fallthrough
       -Wunused
+      -Wno-sign-compare
     )
   endif()
   set_target_properties(${name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
