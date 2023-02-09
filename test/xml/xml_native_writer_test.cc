@@ -918,7 +918,7 @@ TEST_F(XMLWriterLocaleTest, IgnoresLocale) {
 
   // Test that MuJoCo doesn't override locales for subsequent calls.
   char formatted[8];
-  std::snprintf(formatted, sizeof(formatted), "%f", 3.9375);
+  std::snprintf(formatted, sizeof(formatted), "%.4f", 3.9375);
   EXPECT_EQ(std::string(formatted), "3,9375");
 }
 

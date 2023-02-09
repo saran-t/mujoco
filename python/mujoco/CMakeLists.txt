@@ -276,12 +276,14 @@ macro(mujoco_pybind11_module name)
   pybind11_add_module(${name} ${ARGN})
   target_compile_options(${name} PRIVATE ${AVX_COMPILE_OPTIONS})
   if(NOT MSVC)
-    set(EXTRA_COMPILE_OPTIONS
+    target_compile_options(
+      ${name}
+      PRIVATE
       -Wall
       -Werror
       -Wimplicit-fallthrough
       -Wunused
-  )
+    )
   endif()
   set_target_properties(${name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
   if(APPLE)
