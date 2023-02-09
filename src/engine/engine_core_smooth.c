@@ -21,6 +21,7 @@
 #include <mujoco/mjmodel.h>
 #include "engine/engine_callback.h"
 #include "engine/engine_core_constraint.h"
+#include "engine/engine_crossplatform.h"
 #include "engine/engine_io.h"
 #include "engine/engine_macro.h"
 #include "engine/engine_plugin.h"
