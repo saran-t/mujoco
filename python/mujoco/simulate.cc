@@ -138,8 +138,9 @@ PYBIND11_MODULE(_simulate, pymodule) {
             return simulate.loadError;
           },
           [](mujoco::Simulate& simulate, const std::string& error) {
-            std::strncpy(simulate.loadError, error.c_str(),
-                         simulate.kMaxFilenameLength);
+            std::strncpy(simulate.loadError.size, error.c_str(),
+                         simulate.kMaxFilenameLength - 1);
+            simulate.loadError[simulate.kMaxFilenameLength - 1] = '\0';
           });
 
   pymodule.def("setglfwdlhandle", [](std::uintptr_t dlhandle) {
