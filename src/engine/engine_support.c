@@ -442,6 +442,7 @@ static int _getnumadr(const mjModel* m, mjtObj type, int** padr, int* mapadr) {
   // get address list and size for object type
   switch (type) {
     case mjOBJ_BODY:
+      mjFALLTHROUGH;
     case mjOBJ_XBODY:
       *mapadr -= mjLOAD_MULTIPLE*m->nbody;
       *padr = m->name_bodyadr;
@@ -1270,7 +1271,8 @@ void mj_differentiatePos(const mjModel* m, mjtNum* qvel, mjtNum dt,
       vadr += 3;
       padr += 3;
 
-    // continute with rotations
+      // continute with rotations
+      mjFALLTHROUGH;
 
     case mjJNT_BALL:
       mju_negQuat(neg, qpos1+padr);           // solve:  qpos1 * dif = qpos2
@@ -1279,6 +1281,7 @@ void mj_differentiatePos(const mjModel* m, mjtNum* qvel, mjtNum dt,
       break;
 
     case mjJNT_HINGE:
+      mjFALLTHROUGH;
     case mjJNT_SLIDE:
       qvel[vadr] = (qpos2[padr] - qpos1[padr]) / dt;
     }
@@ -1304,7 +1307,8 @@ void mj_integratePos(const mjModel* m, mjtNum* qpos, const mjtNum* qvel, mjtNum 
       padr += 3;
       vadr += 3;
 
-    // continue with rotation update
+      // continue with rotation update
+      mjFALLTHROUGH;
 
     case mjJNT_BALL:
       // quaternion update
@@ -1312,6 +1316,7 @@ void mj_integratePos(const mjModel* m, mjtNum* qpos, const mjtNum* qvel, mjtNum 
       break;
 
     case mjJNT_HINGE:
+      mjFALLTHROUGH;
     case mjJNT_SLIDE:
       // scalar update: same for rotation and translation
       qpos[padr] += dt * qvel[vadr];
