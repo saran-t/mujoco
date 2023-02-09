@@ -61,7 +61,7 @@ static void makeLabel(const mjModel* m, mjtObj type, int id, char* label) {
   }
 
   // copy result into label
-  strncpy(label, txt, 100);
+  strncpy(label, txt, 99);
   label[99] = '\0';
 }
 
