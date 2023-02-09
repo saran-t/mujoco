@@ -283,6 +283,7 @@ macro(mujoco_pybind11_module name)
       -Werror
       -Wimplicit-fallthrough
       -Wunused
+      -Wno-int-in-bool-context
       -Wno-sign-compare
     )
   endif()
