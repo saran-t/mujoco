@@ -119,11 +119,14 @@ class GLContext:
     """Frees resources associated with this context."""
     if self._context:
       current_context = EGL.eglGetCurrentContext()
+      release_thread = False
       if current_context and self._context.address == current_context.address:
         EGL.eglMakeCurrent(EGL_DISPLAY, EGL.EGL_NO_SURFACE,
                            EGL.EGL_NO_SURFACE, EGL.EGL_NO_CONTEXT)
+        release_thread = True
       EGL.eglDestroyContext(EGL_DISPLAY, self._context)
-      EGL.eglReleaseThread()
+      if release_thread:
+        EGL.eglReleaseThread()
     self._context = None
 
   def __del__(self):
