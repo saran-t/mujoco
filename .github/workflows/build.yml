@@ -128,11 +128,19 @@ jobs:
     - name: Prepare Windows
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
-      run: Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33807\x64"
+      run: >
+        Get-ChildItem (
+        Join-Path (
+        Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC" -Directory | 
+        Select-Object -First 1).FullName 'x64\Microsoft.VC143.CRT')
     - name: Prepare Windows
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
-      run: Add-Content $env:GITHUB_PATH "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33807\x64\Microsoft.VC144.CRT"
+      run: >
+        Add-Content $env:GITHUB_PATH Get-Item (
+        Join-Path (
+        Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC" -Directory | 
+        Select-Object -First 1).FullName 'x64\Microsoft.VC143.CRT')
     - name: Prepare Windows
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
