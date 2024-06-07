@@ -128,7 +128,7 @@ jobs:
     - name: Prepare Windows
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
-      run: echo ((Get-Command C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33810.0\x64\Microsoft.VC144.CRT\vcruntime140.dll).Version)
+      run: echo ((Get-Command "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33810.0\x64\Microsoft.VC144.CRT\vcruntime140.dll").Version)
     - name: Prepare Windows
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
