@@ -125,6 +125,23 @@ jobs:
     - name: Prepare macOS
       if: ${{ runner.os == 'macOS' }}
       run: brew install ninja
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    - name: Prepare Python
+      shell: bash
+      run: |
+        repo="${PWD}"
+        cd ${{ matrix.tmpdir }}
+        python -m venv venv
+        if [[ $RUNNER_OS == "Windows" ]]; then
+        mkdir venv/bin
+        fixpath="$(s="$(cat venv/Scripts/activate | grep VIRTUAL_ENV=)"; echo "${s:13:-1}")"
+        sed -i "s#$(printf "%q" "${fixpath}")#$(cygpath "${fixpath}")#g" venv/Scripts/activate
+        ln -s ../Scripts/activate venv/bin/activate
+        fi
+        source venv/bin/activate
+        python -m pip install --upgrade --require-hashes -r "${repo}/python/build_requirements.txt"
     - name: Prepare Windows
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
@@ -149,23 +166,6 @@ jobs:
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
       run: echo ((Get-Command vcruntime140.dll).Version)
-    - uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
-    - name: Prepare Python
-      shell: bash
-      run: |
-        repo="${PWD}"
-        cd ${{ matrix.tmpdir }}
-        python -m venv venv
-        if [[ $RUNNER_OS == "Windows" ]]; then
-        mkdir venv/bin
-        fixpath="$(s="$(cat venv/Scripts/activate | grep VIRTUAL_ENV=)"; echo "${s:13:-1}")"
-        sed -i "s#$(printf "%q" "${fixpath}")#$(cygpath "${fixpath}")#g" venv/Scripts/activate
-        ln -s ../Scripts/activate venv/bin/activate
-        fi
-        source venv/bin/activate
-        python -m pip install --upgrade --require-hashes -r "${repo}/python/build_requirements.txt"
     - name: Configure MuJoCo
       run: >
         mkdir build &&
