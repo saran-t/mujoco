@@ -130,8 +130,8 @@ jobs:
       shell: powershell
       run: >
         New-Item -Force -ItemType SymbolicLink
-        -Path "C:\Windows\system32\vcruntime140.dll"
-        -Target "C:\hostedtoolcache\windows\Python\3.9.13\x64\vcruntime140.dll"
+        -Path "C:\hostedtoolcache\windows\Python\3.9.13\x64\vcruntime140.dll"
+        -Target "C:\Windows\system32\vcruntime140.dll"
     - uses: actions/setup-python@v4
       with:
         python-version: "3.11"
