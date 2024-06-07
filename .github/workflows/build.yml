@@ -103,7 +103,7 @@ jobs:
             tmpdir: "/tmp"
           - os: windows-2022
             cmake_args: >-
-              -DCMAKE_SYSTEM_VERSION="10.0.22621.0"
+              -DCMAKE_SYSTEM_VERSION="10.1.22621.3233"
             cmake_build_args: "-- -m"
             tmpdir: "C:/Temp"
 
