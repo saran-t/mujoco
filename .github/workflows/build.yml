@@ -129,13 +129,14 @@ jobs:
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
       run: >
-        New-Item -Force -ItemType SymbolicLink
+        (Remove-Item "C:\hostedtoolcache\windows\Python\3.9.13\x64\vcruntime140.dll") -and
+        (New-Item -ItemType SymbolicLink
         -Path "C:\hostedtoolcache\windows\Python\3.9.13\x64\vcruntime140.dll"
-        -Target "C:\Windows\system32\vcruntime140.dll"
+        -Target "C:\Windows\system32\vcruntime140.dll")
     - name: Prepare Windows
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
-      run: echo ((Get-Command vcruntime140.dll).Path)
+      run: echo ((Get-Command vcruntime140.dll).Version)
     - uses: actions/setup-python@v4
       with:
         python-version: "3.11"
