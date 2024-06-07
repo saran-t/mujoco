@@ -128,26 +128,11 @@ jobs:
     - name: Prepare Windows
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
-      run: Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC"
+      run: Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33807\x64\Microsoft.VC144.CRT"
     - name: Prepare Windows
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
-      run: echo ((Get-Command vcruntime140.dll).Path)
-    - name: Prepare Windows
-      if: ${{ runner.os == 'Windows' }}
-      shell: powershell
-      run: echo ((Get-Command vcruntime140.dll).Version)
-    - name: Prepare Windows
-      if: ${{ runner.os == 'Windows' }}
-      shell: powershell
-      run: Remove-Item "C:\hostedtoolcache\windows\Python\3.9.13\x64\vcruntime140.dll"
-    - name: Prepare Windows
-      if: ${{ runner.os == 'Windows' }}
-      shell: powershell
-      run: >
-        New-Item -ItemType SymbolicLink
-        -Path "C:\hostedtoolcache\windows\Python\3.9.13\x64\vcruntime140.dll"
-        -Target "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33810.0\x64\Microsoft.VC144.CRT\vcruntime140.dll"
+      run: Add-Content $env:GITHUB_PATH "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33807\x64\Microsoft.VC144.CRT"
     - name: Prepare Windows
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
