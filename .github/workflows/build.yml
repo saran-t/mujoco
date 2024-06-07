@@ -142,30 +142,30 @@ jobs:
         fi
         source venv/bin/activate
         python -m pip install --upgrade --require-hashes -r "${repo}/python/build_requirements.txt"
-    - name: Prepare Windows
-      if: ${{ runner.os == 'Windows' }}
-      shell: powershell
-      run: >
-        Get-ChildItem (Join-Path
-        ((Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.*" -Directory |
-        Sort -Descending | Select-Object -First 1).FullName) 'x64\Microsoft.VC143.CRT')
-    - name: Prepare Windows
-      if: ${{ runner.os == 'Windows' }}
-      shell: powershell
-      run: |
-        Add-Content $env:GITHUB_PATH (Join-Path `
-          ((Get-ChildItem -Directory `
-              -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.*" |
-            Sort -Descending | Select-Object -First 1).FullName
-          ) 'x64\Microsoft.VC143.CRT')
-    - name: Prepare Windows
-      if: ${{ runner.os == 'Windows' }}
-      shell: powershell
-      run: echo ((Get-Command vcruntime140.dll).Path)
-    - name: Prepare Windows
-      if: ${{ runner.os == 'Windows' }}
-      shell: powershell
-      run: echo ((Get-Command vcruntime140.dll).Version)
+    # - name: Prepare Windows
+    #   if: ${{ runner.os == 'Windows' }}
+    #   shell: powershell
+    #   run: >
+    #     Get-ChildItem (Join-Path
+    #     ((Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.*" -Directory |
+    #     Sort -Descending | Select-Object -First 1).FullName) 'x64\Microsoft.VC143.CRT')
+    # - name: Prepare Windows
+    #   if: ${{ runner.os == 'Windows' }}
+    #   shell: powershell
+    #   run: |
+    #     Add-Content $env:GITHUB_PATH (Join-Path `
+    #       ((Get-ChildItem -Directory `
+    #           -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.*" |
+    #         Sort -Descending | Select-Object -First 1).FullName
+    #       ) 'x64\Microsoft.VC143.CRT')
+    # - name: Prepare Windows
+    #   if: ${{ runner.os == 'Windows' }}
+    #   shell: powershell
+    #   run: echo ((Get-Command vcruntime140.dll).Path)
+    # - name: Prepare Windows
+    #   if: ${{ runner.os == 'Windows' }}
+    #   shell: powershell
+    #   run: echo ((Get-Command vcruntime140.dll).Version)
     - name: Configure MuJoCo
       run: >
         mkdir build &&
@@ -178,20 +178,16 @@ jobs:
     - name: Build MuJoCo
       working-directory: build
       run: cmake --build . --config=Release ${{ matrix.cmake_build_args }}
-    - name: Prepare Windows
-      working-directory: build
+    - name: Copy updated VC runtime into bin directory
       if: ${{ runner.os == 'Windows' }}
+      working-directory: build
       shell: powershell
-      run: echo ((Get-Command vcruntime140.dll).Path)
-    - name: Prepare Windows
-      working-directory: build
-      if: ${{ runner.os == 'Windows' }}
-      shell: powershell
-      run: echo ((Get-Command vcruntime140.dll).Version)
-    - name: Prepare Windows
-      working-directory: build
-      if: ${{ runner.os == 'Windows' }}
-      run: echo $PATH
+      run: |
+        Copy-Item (Join-Path `
+          ((Get-ChildItem -Directory `
+              -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.*" |
+            Sort -Descending | Select-Object -First 1).FullName
+          ) 'x64\Microsoft.VC143.CRT\vcruntime140.dll') "bin\Release"
     - name: Test MuJoCo
       working-directory: build
       run: ctest -C Release --output-on-failure .
