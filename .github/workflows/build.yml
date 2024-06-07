@@ -144,6 +144,10 @@ jobs:
       if: ${{ runner.os == 'Windows' }}
       shell: powershell
       run: echo ((Get-Command vcruntime140.dll).Version)
+    - name: Prepare Windows
+      if: ${{ runner.os == 'Windows' }}
+      shell: powershell
+      run: echo ((Get-Command C:\Windows\system32\vcruntime140.dll).Version)
     - uses: actions/setup-python@v4
       with:
         python-version: "3.11"
