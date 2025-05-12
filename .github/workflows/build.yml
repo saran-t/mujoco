@@ -40,7 +40,7 @@ jobs:
               -DCMAKE_CXX_COMPILER:STRING=g++-13
               -DCMAKE_EXE_LINKER_FLAGS:STRING=-Wl,--no-as-needed
             tmpdir: "/tmp"
-          - os: ubuntu-24.04
+          - os: ubuntu-22.04
             label: "ubuntu-24.04-gcc-12"
             cmake_args: >-
               -G Ninja
