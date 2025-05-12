@@ -244,7 +244,6 @@ jobs:
         source ${{ matrix.tmpdir }}/venv/bin/activate &&
         ./make_sdist.sh
     - name: Build Python bindings
-      if: ${{ runner.os != 'Windows' }}
       shell: bash
       working-directory: python/dist
       run: >
@@ -254,14 +253,12 @@ jobs:
         MUJOCO_CMAKE_ARGS="-DCMAKE_INTERPROCEDURAL_OPTIMIZATION:BOOL=OFF ${{ matrix.cmake_args }}"
         pip wheel -v --no-deps mujoco-*.tar.gz
     - name: Install Python bindings
-      if: ${{ runner.os != 'Windows' }}
       shell: bash
       working-directory: python/dist
       run: >
         source ${{ matrix.tmpdir }}/venv/bin/activate &&
         pip install --no-index mujoco-*.whl
     - name: Test Python bindings
-      if: ${{ runner.os != 'Windows' }}
       shell: bash
       env:
         MUJOCO_GL: disable
@@ -269,14 +266,12 @@ jobs:
         source ${{ matrix.tmpdir }}/venv/bin/activate &&
         pytest -v --pyargs mujoco
     - name: Package MJX
-      if: ${{ runner.os != 'Windows' }}
       shell: bash
       working-directory: mjx
       run:
         source ${{ matrix.tmpdir }}/venv/bin/activate &&
         python -m build .
     - name: Install MJX
-      if: ${{ runner.os != 'Windows' }}
       shell: bash
       working-directory: mjx
       run:
@@ -284,7 +279,6 @@ jobs:
         pip install --require-hashes -r requirements.txt &&
         pip install --no-index dist/mujoco_mjx-*.whl
     - name: Test MJX
-      if: ${{ runner.os != 'Windows' }}
       shell: bash
       run:
         source ${{ matrix.tmpdir }}/venv/bin/activate &&
