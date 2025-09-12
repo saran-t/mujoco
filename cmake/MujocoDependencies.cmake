@@ -215,6 +215,14 @@ findorfetch(
   ccd
   EXCLUDE_FROM_ALL
 )
+set(CCD_EXTRA_FETCH_ARGS
+        PATCH_COMMAND
+        "sed"
+        "-i"
+        "-e"
+        "s/cmake_minimum_required(VERSION 2.8.11)/cmake_minimum_required(VERSION 3.5..4.0)/g"
+        "${CMAKE_BINARY_DIR}/_deps/ccd-src/CMakeLists.txt"
+    )
 target_compile_options(ccd PRIVATE ${MUJOCO_MACOS_COMPILE_OPTIONS})
 target_link_options(ccd PRIVATE ${MUJOCO_MACOS_LINK_OPTIONS})
 
