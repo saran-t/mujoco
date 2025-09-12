@@ -23,7 +23,7 @@ set(MUJOCO_DEP_VERSION_tinyxml2
     CACHE STRING "Version of `tinyxml2` to be fetched."
 )
 set(MUJOCO_DEP_VERSION_tinyobjloader
-    1421a10d6ed9742f5b2c1766d22faa6cfbc56248
+    a4e519b0a0f29c790464fcfeadfe25a7f9fa15ff
     CACHE STRING "Version of `tinyobjloader` to be fetched."
 )
 set(MUJOCO_DEP_VERSION_MarchingCubeCpp
