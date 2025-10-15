@@ -39,7 +39,7 @@ set(MUJOCO_DEP_VERSION_qhull
     CACHE STRING "Version of `qhull` to be fetched."
 )
 set(MUJOCO_DEP_VERSION_Eigen3
-    4033cfcc1dd45b3cdf7285afd93556f2cfbe9425
+    0d85af5ffd895f7f21d8f0856771684c8f7a6236
     CACHE STRING "Version of `Eigen3` to be fetched."
 )
 
@@ -356,7 +356,7 @@ if(MUJOCO_TEST_PYTHON_UTIL)
 
     FetchContent_Declare(
       Eigen3
-      GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+      GIT_REPOSITORY https://gitlab.com/saran-t/eigen.git
       GIT_TAG ${MUJOCO_DEP_VERSION_Eigen3}
     )
 
