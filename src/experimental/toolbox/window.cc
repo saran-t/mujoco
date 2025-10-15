@@ -17,18 +17,23 @@
 #include <string>
 #include <string_view>
 
-#include "third_party/SDL2/include/SDL.h"
-#include "third_party/SDL2/include/SDL_error.h"
-#include "third_party/SDL2/include/SDL_events.h"
-#include "third_party/SDL2/include/SDL_hints.h"
-#include "third_party/SDL2/include/SDL_syswm.h"
-#include "third_party/SDL2/include/SDL_version.h"
-#include "third_party/SDL2/include/SDL_video.h"
-#include "third_party/dear_imgui/backends/imgui_impl_sdl2.h"
-#include "third_party/dear_imgui/imgui.h"
-#include "third_party/implot/implot.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_error.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_hints.h>
+#include <SDL2/SDL_syswm.h>
+#include <SDL2/SDL_version.h>
+#include <SDL2/SDL_video.h>
+#include <dear_imgui/backends/imgui_impl_sdl2.h>
+#include <dear_imgui/imgui.h>
+#include <implot/implot.h>
 #include "experimental/toolbox/helpers.h"
 #include <mujoco/mujoco.h>
+
+// Because X11/Xlib.h defines Status.
+#ifdef Status
+#undef Status
+#endif
 
 namespace mujoco::toolbox {
 
@@ -85,7 +90,7 @@ Window::Window(std::string_view title, int width, int height, Config config,
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-  } else if (config == kMujocoOpenGL || config == kFilamentOpenGL) {
+  } else if (config == kClassicOpenGL || config == kFilamentOpenGL) {
     window_flags |= SDL_WINDOW_OPENGL;
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -102,7 +107,7 @@ Window::Window(std::string_view title, int width, int height, Config config,
 
   InitImGui(sdl_window_, load_asset_fn);
 
-  if (config == kFilamentWebGL || config == kMujocoOpenGL) {
+  if (config == kFilamentWebGL || config == kClassicOpenGL) {
     SDL_GLContext gl_context = SDL_GL_CreateContext(sdl_window_);
     SDL_GL_MakeCurrent(sdl_window_, gl_context);
   }

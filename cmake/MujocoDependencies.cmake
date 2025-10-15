@@ -39,12 +39,12 @@ set(MUJOCO_DEP_VERSION_qhull
     CACHE STRING "Version of `qhull` to be fetched."
 )
 set(MUJOCO_DEP_VERSION_Eigen3
-    4be7e6b4e0a82853e853c0c7c4ef72f395e1f497
+    4033cfcc1dd45b3cdf7285afd93556f2cfbe9425
     CACHE STRING "Version of `Eigen3` to be fetched."
 )
 
 set(MUJOCO_DEP_VERSION_abseil
-    987c57f325f7fa8472fa84e1f885f7534d391b0d # LTS 20250814.0
+    d38452e1ee03523a208362186fd42248ff2609f6 # LTS 20250814.1
     CACHE STRING "Version of `abseil` to be fetched."
 )
 
@@ -54,7 +54,7 @@ set(MUJOCO_DEP_VERSION_gtest
 )
 
 set(MUJOCO_DEP_VERSION_benchmark
-    049f6e79cc3e8636cec21bbd94ed185b4a5f2653
+    5f7d66929fb66869d96dfcbacf0d8a586b33766d
     CACHE STRING "Version of `benchmark` to be fetched."
 )
 
@@ -203,6 +203,16 @@ if(NOT TARGET trianglemeshdistance)
   FetchContent_GetProperties(trianglemeshdistance)
   if(NOT trianglemeshdistance_POPULATED)
     FetchContent_Populate(trianglemeshdistance)
+    # Patch the source code to silence a warning/error related to a loop variable creating a copy.
+    # Since this is a header only library this fix is less intrusive than disabling the warning for
+    # any target including the header.
+    set(TMD_HEADER ${trianglemeshdistance_SOURCE_DIR}/TriangleMeshDistance/include/tmd/TriangleMeshDistance.h)
+    file(READ ${TMD_HEADER} TMD_CONTENT)
+    string(REPLACE
+      "for (const auto edge_count : edges_count) {"
+      "for (const auto& edge_count : edges_count) {"
+      TMD_CONTENT "${TMD_CONTENT}")
+    file(WRITE ${TMD_HEADER} "${TMD_CONTENT}")
     include_directories(${trianglemeshdistance_SOURCE_DIR})
   endif()
 endif()

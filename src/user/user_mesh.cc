@@ -59,7 +59,7 @@
 #include <mujoco/mjmodel.h>
 #include <mujoco/mjplugin.h>
 #include <mujoco/mjtnum.h>
-#include "engine/engine_crossplatform.h"
+#include "engine/engine_crossplatform.h"  // IWYU pragma: keep
 #include "engine/engine_plugin.h"
 #include "engine/engine_util_errmem.h"
 #include "user/user_cache.h"
@@ -73,7 +73,6 @@ extern "C" {
 }
 
 namespace {
-  using mujoco::user::VectorToString;
   using mujoco::user::FilePath;
   using std::max;
   using std::min;
@@ -211,8 +210,8 @@ mjCMesh::mjCMesh(mjCModel* _model, mjCDef* _def) {
   mjuu_setvec(aamm_, 1e10, 1e10, 1e10);
   mjuu_setvec(aamm_+3, -1e10, -1e10, -1e10);
   szgraph_ = 0;
-  center_ = NULL;
-  graph_ = NULL;
+  center_ = nullptr;
+  graph_ = nullptr;
   needhull_ = false;
   maxhullvert_ = -1;
   processed_ = false;
@@ -254,14 +253,14 @@ mjCMesh& mjCMesh::operator=(const mjCMesh& other) {
       this->center_ = (double*)mju_malloc(ncenter);
       memcpy(this->center_, other.center_, ncenter);
     } else {
-      this->center_ = NULL;
+      this->center_ = nullptr;
     }
     if (other.graph_) {
       size_t szgraph = szgraph_*sizeof(int);
       this->graph_ = (int*)mju_malloc(szgraph);
       memcpy(this->graph_, other.graph_, szgraph);
     } else {
-      this->graph_ = NULL;
+      this->graph_ = nullptr;
     }
   }
   PointToLocal();
@@ -332,8 +331,8 @@ void mjCMesh::CopyFromSpec() {
   if (center_) mju_free(center_);
   if (graph_) mju_free(graph_);
   szgraph_ = 0;
-  center_ = NULL;
-  graph_ = NULL;
+  center_ = nullptr;
+  graph_ = nullptr;
 
   // use filename if name is missing
   if (name.empty()) {
@@ -524,7 +523,7 @@ namespace {
 struct VertexKey {
   float v[3];
 
-  bool operator==(const VertexKey &other) const {
+  bool operator==(const VertexKey& other) const {
     return (v[0] == other.v[0] && v[1] == other.v[1] && v[2] == other.v[2]);
   }
 
@@ -979,10 +978,7 @@ void mjCMesh::DelTexcoord() {
 
 
 // set geom size to match mesh
-void mjCMesh::FitGeom(mjCGeom* geom, double* meshpos) {
-  // copy mesh pos into meshpos
-  mjuu_copyvec(meshpos, GetPosPtr(), 3);
-
+void mjCMesh::FitGeom(mjCGeom* geom, double center[3]) {
   // use inertial box
   if (!model->compiler.fitaabb) {
     // get inertia box type (shell or volume)
@@ -1016,64 +1012,35 @@ void mjCMesh::FitGeom(mjCGeom* geom, double* meshpos) {
 
   // use aamm
   else {
-    // find aabb box center
-    double cen[3] = {(aamm_[0]+aamm_[3])/2, (aamm_[1]+aamm_[4])/2, (aamm_[2]+aamm_[5])/2};
+    // find aabb box center and size
+    center[0] = (aamm_[0]+aamm_[3])/2;
+    center[1] = (aamm_[1]+aamm_[4])/2;
+    center[2] = (aamm_[2]+aamm_[5])/2;
+    double size[3] = {aamm_[3] - center[0], aamm_[4] - center[1], aamm_[5] - center[2]};
 
-    // add box center into meshpos
-    meshpos[0] += cen[0];
-    meshpos[1] += cen[1];
-    meshpos[2] += cen[2];
-
-    // compute depending on type
+    // compute smallest geom whose aabb contains the mesh aabb
     switch (geom->type) {
       case mjGEOM_SPHERE:
-        // find maximum distance
-        geom->size[0] = 0;
-        for (int i=0; i < nvert(); i++) {
-          double v[3] = {vert_[3*i], vert_[3*i+1], vert_[3*i+2]};
-          double dst = mjuu_dist3(v, cen);
-          geom->size[0] = max(geom->size[0], dst);
-        }
+        geom->size[0] = max(max(size[0], size[1]), size[2]);
         break;
 
       case mjGEOM_CAPSULE:
       case mjGEOM_CYLINDER:
         // find maximum distance in XY, separately in Z
-        geom->size[0] = 0;
-        geom->size[1] = 0;
-        for (int i=0; i < nvert(); i++) {
-          double v[3] = {vert_[3*i], vert_[3*i+1], vert_[3*i+2]};
-          double dst = sqrt((v[0]-cen[0])*(v[0]-cen[0]) +
-                            (v[1]-cen[1])*(v[1]-cen[1]));
-          geom->size[0] = max(geom->size[0], dst);
-
-          // proceed with z: valid for cylinder
-          double dst2 = abs(v[2]-cen[2]);
-          geom->size[1] = max(geom->size[1], dst2);
-        }
+        geom->size[0] = max(size[0], size[1]);
+        geom->size[1] = size[2];
 
         // special handling of capsule: consider curved cap
         if (geom->type == mjGEOM_CAPSULE) {
-          geom->size[1] = 0;
-          for (int i=0; i < nvert(); i++) {
-            // get distance in XY and Z
-            double v[3] = {vert_[3*i], vert_[3*i+1], vert_[3*i+2]};
-            double dst = sqrt((v[0]-cen[0])*(v[0]-cen[0]) +
-                              (v[1]-cen[1])*(v[1]-cen[1]));
-            double dst2 = abs(v[2]-cen[2]);
-
-            // get spherical elevation at horizontal distance dst
-            double h = geom->size[0] * sin(acos(dst/geom->size[0]));
-            geom->size[1] = max(geom->size[1], dst2-h);
-          }
+          geom->size[1] -= geom->size[0];
         }
         break;
 
       case mjGEOM_ELLIPSOID:
       case mjGEOM_BOX:
-        geom->size[0] = aamm_[3] - cen[0];
-        geom->size[1] = aamm_[4] - cen[1];
-        geom->size[2] = aamm_[5] - cen[2];
+        geom->size[0] = size[0];
+        geom->size[1] = size[1];
+        geom->size[2] = size[2];
         break;
 
       default:
@@ -1244,7 +1211,7 @@ void mjCMesh::LoadSTL(mjResource* resource) {
 
   // get file data in buffer
   char* buffer = 0;
-  int buffer_sz = mju_readResource(resource, (const void**)  &buffer);
+  int buffer_sz = mju_readResource(resource, (const void**)&buffer);
 
   // still not found
   if (buffer_sz < 0) {
@@ -1317,7 +1284,7 @@ void mjCMesh::LoadMSH(mjResource* resource, bool remove_repeated) {
 
   // get file data in buffer
   char* buffer = 0;
-  int buffer_sz = mju_readResource(resource, (const void**)  &buffer);
+  int buffer_sz = mju_readResource(resource, (const void**)&buffer);
 
   // still not found
   if (buffer_sz < 0) {
@@ -1912,7 +1879,7 @@ void mjCMesh::MakeGraph() {
   qh_zero(qh, stderr);
 
   // qhull basic init
-  qh_init_A(qh, stdin, stdout, stderr, 0, NULL);
+  qh_init_A(qh, stdin, stdout, stderr, 0, nullptr);
 
   // install longjmp error handler
   exitcode = setjmp(qh->errexit);
@@ -1920,7 +1887,7 @@ void mjCMesh::MakeGraph() {
   if (!exitcode) {
     // actual init
     qh_initflags(qh, const_cast<char*>(qhopt.c_str()));
-    qh_init_B(qh, vert_.data(), nvert(), 3, False);
+    qh_init_B(qh, vert_.data(), nvert(), 3, qh_False);
 
     // construct convex hull
     qh_qhull(qh);
@@ -2693,10 +2660,11 @@ void mjCMesh::MakeNormal() {
                       normal_[3*i+2]*normal_[3*i+2]);
 
     // divide by length
-    if (len > mjMINVAL)
+    if (len > mjMINVAL) {
       for (int j=0; j < 3; j++) {
         normal_[3*i+j] /= len;
-      }else {
+      }
+    } else {
       normal_[3*i] = normal_[3*i+1] = 0;
       normal_[3*i+2] = 1;
     }
@@ -3302,7 +3270,7 @@ void mjCSkin::Compile(const mjVFS* vfs) {
       // get index and check range
       int jj = vertid_[i][j];
       if (jj < 0 || jj >= nvert) {
-        throw mjCError(this, "vertid %d out of range in skin", NULL, jj);
+        throw mjCError(this, "vertid %d out of range in skin", nullptr, jj);
       }
 
       // accumulate
@@ -3313,7 +3281,7 @@ void mjCSkin::Compile(const mjVFS* vfs) {
   // check coverage
   for (int i=0; i < nvert; i++) {
     if (vw[i] <= mjMINVAL) {
-      throw mjCError(this, "vertex %d must have positive total weight in skin", NULL, i);
+      throw mjCError(this, "vertex %d must have positive total weight in skin", nullptr, i);
     }
   }
 
@@ -3346,7 +3314,7 @@ void mjCSkin::Compile(const mjVFS* vfs) {
 // load skin in SKN BIN format
 void mjCSkin::LoadSKN(mjResource* resource) {
   char* buffer = 0;
-  int buffer_sz = mju_readResource(resource, (const void**)  &buffer);
+  int buffer_sz = mju_readResource(resource, (const void**)&buffer);
 
   if (buffer_sz < 0) {
     throw mjCError(this, "could not read SKN file '%s'", resource->name);
@@ -3621,8 +3589,8 @@ void inline ComputeBasis<Stencil2D>(double basis[9], const double* x,
 
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
-      basis[3*i+j] = ( basisL[i]*basisR[j] +
-                       basisR[i]*basisL[j] ) / (8*volume*volume);
+      basis[3*i+j] = (basisL[i]*basisR[j] +
+                      basisR[i]*basisL[j]) / (8*volume*volume);
     }
   }
 }
@@ -3657,8 +3625,8 @@ void inline ComputeBasis<Stencil3D>(double basis[9], const double* x,
 
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
-      basis[3*i+j] = ( normalL[i]*normalR[j] +
-                       normalR[i]*normalL[j] ) / (36*2*volume*volume);
+      basis[3*i+j] = (normalL[i]*normalR[j] +
+                      normalR[i]*normalL[j]) / (36*2*volume*volume);
     }
   }
 }
@@ -3930,7 +3898,7 @@ void inline ComputeLinearStiffness(std::vector<double>& K,
         }
 
         if (dof != n) {  // SHOULD NOT OCCUR
-          throw mjCError(NULL, "incorrect number of basis functions");
+          throw mjCError(nullptr, "incorrect number of basis functions");
         }
 
         // tensor contraction of the gradients of elastic strains
@@ -4295,8 +4263,7 @@ void mjCFlex::Compile(const mjVFS* vfs) {
     for (int e = 0; e < kNumEdges[dim-1]; e++) {
       auto pair = std::pair(
         min(v[eledge[dim-1][e][0]], v[eledge[dim-1][e][1]]),
-        max(v[eledge[dim-1][e][0]], v[eledge[dim-1][e][1]])
-        );
+        max(v[eledge[dim-1][e][0]], v[eledge[dim-1][e][1]]));
 
       // if edge is already present in the vector only store its index
       auto [it, inserted] = edge_indices.insert({pair, nedge});

@@ -19,7 +19,7 @@
 #include <string_view>
 
 #include "experimental/toolbox/helpers.h"
-#include "third_party/SDL2/include/SDL_video.h"
+#include <SDL2/SDL_video.h>
 
 namespace mujoco::toolbox {
 
@@ -31,7 +31,7 @@ class Window {
  public:
   // Configures the window for the specified rendering backend.
   enum Config {
-    kMujocoOpenGL,
+    kClassicOpenGL,
     kFilamentVulkan,
     kFilamentOpenGL,
     kFilamentWebGL,
