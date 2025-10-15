@@ -39,7 +39,7 @@ set(MUJOCO_DEP_VERSION_qhull
     CACHE STRING "Version of `qhull` to be fetched."
 )
 set(MUJOCO_DEP_VERSION_Eigen3
-    0d85af5ffd895f7f21d8f0856771684c8f7a6236
+    e35bc054c25812da8bd000766da2028da37bd059
     CACHE STRING "Version of `Eigen3` to be fetched."
 )
 
