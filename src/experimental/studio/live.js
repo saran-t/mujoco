@@ -12,6 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+const WASM_PAGE_SIZE = 65536;
+
+// Initial memory: 256MB (Must match -sINITIAL_MEMORY in CMakeLists.txt)
+const INITIAL_PAGES = (256 * 1024 * 1024) / WASM_PAGE_SIZE;
+
+// Max memory for iOS: 1GB
+const IOS_MAX_PAGES = (1024 * 1024 * 1024) / WASM_PAGE_SIZE;
+
+const wasmMemoryDescriptor = {
+    initial: INITIAL_PAGES,
+    shared: false
+};
+
+if (isIOS) {
+    wasmMemoryDescriptor.maximum = IOS_MAX_PAGES;
+}
+
 // --- Loading overlay (shown while model is compiling) ---
 const loadingOverlay = document.getElementById('loadingOverlay');
 function showLoading() {
@@ -22,6 +42,7 @@ function hideLoading() {
 }
 
 var Module = {
+  wasmMemory: new WebAssembly.Memory(wasmMemoryDescriptor),
   preRun: [],
   postRun: [],
   locateFile: function (path) {
