@@ -67,7 +67,7 @@ if(EMSCRIPTEN)
   # futex, X11, Vulkan, etc.
   if(MUJOCO_USE_FILAMENT)
     set(WEBGL ON CACHE BOOL "Filament WebGL mode" FORCE)
-    set(WASN ON CACHE BOOL "Filament WASM mode" FORCE)
+    set(WASM ON CACHE BOOL "Filament WASM mode" FORCE)
   endif()
 
   # Automatically generate host tool imports for Filament cross-compilation.
