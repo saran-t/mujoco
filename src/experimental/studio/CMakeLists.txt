@@ -62,7 +62,7 @@ function(configure_studio_target TARGET_NAME)
             "-Wl,-force_load,$<TARGET_FILE:mujoco_platform>")
     elseif(NOT MSVC)
         target_link_options(${TARGET_NAME} PRIVATE
-            "-Wl,--whole-archive" "$<TARGET_FILE:mujoco_platform>" "-Wl,--no-whole-archive")
+            "-Wl,--whole-archive,$<TARGET_FILE:mujoco_platform>,--no-whole-archive")
     else()
         target_link_options(${TARGET_NAME} PRIVATE
             "/WHOLEARCHIVE:$<TARGET_FILE:mujoco_platform>")
@@ -194,7 +194,7 @@ if(EMSCRIPTEN)
 
     # Ensure resource decoder plugins are linked into the WASM binary.
     target_link_options(mujoco_studio PRIVATE
-        -Wl,--whole-archive $<TARGET_FILE:mujoco> -Wl,--no-whole-archive
+        "-Wl,--whole-archive,$<TARGET_FILE:mujoco>,--no-whole-archive"
     )
 
     # Filament's OpenGL backend requires WebGL2 / full ES3 bindings.
